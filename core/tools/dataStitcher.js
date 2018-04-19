@@ -81,14 +81,16 @@ Stitcher.prototype.prepareHistoricalData = function(done) {
       var secondsOverlap = 60 * 15; // 15 minutes
       var idealExchangeStartTimeTS = localData.to - secondsOverlap;
       var idealExchangeStartTime = moment.unix(idealExchangeStartTimeTS).utc();
-
-      // already set the
-      util.setConfigProperty(
-        'tradingAdvisor',
-        'firstFetchSince',
-        idealExchangeStartTimeTS
-      );
     }
+
+    // Make it so that the market fetcher starts fetching from the time we just
+    // calculated.  This ensures that the trades flow through the entire
+    // pipeline.
+    util.setConfigProperty(
+      'tradingAdvisor',
+      'firstFetchSince',
+      idealExchangeStartTimeTS
+    );
 
     // Limit the history Gekko can try to get from the exchange.
     var minutesAgo = endTime.diff(idealExchangeStartTime, 'minutes');
